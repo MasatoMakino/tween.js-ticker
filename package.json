@@ -1,0 +1,47 @@
+{
+  "name": "tween.js-ticker",
+  "version": "0.1.0",
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "esm"
+  ],
+  "description": "Simple update loop module for tweenjs/tween.js.",
+  "repository": "https://MasatoMakino@github.com/MasatoMakino/tween.js-ticker.git",
+  "author": "MasatoMakino <unagiinu.g@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "raf-ticker": "https://github.com/MasatoMakino/raf-ticker.git"
+  },
+  "peerDependencies": {
+    "@tweenjs/tween.js": "^18.5.0"
+  },
+  "devDependencies": {
+    "@tweenjs/tween.js": "^18.5.0",
+    "@types/tween.js": "^17.2.0",
+    "gulp": "^4.0.2",
+    "gulptask-demo-page": "https://github.com/MasatoMakino/gulptask-demo-page.git",
+    "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",
+    "gulptask-tsc": "https://github.com/MasatoMakino/gulptask-tsc.git",
+    "gulptask-tsdoc": "https://github.com/MasatoMakino/gulptask-tsdoc.git",
+    "husky": "^4.0.6",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
+    "ts-node": "^8.6.0",
+    "typescript": "^3.7.4"
+  },
+  "scripts": {
+    "start:dev": "gulp start_dev",
+    "build": "gulp build && npm run doc:card",
+    "build:clean": "gulp build_clean && npm run doc:card",
+    "doc:card": "repoimg -n MasatoMakino/tween.js-ticker -o ./docs/card.png",
+    "checkout:docs": "git checkout HEAD ./docs/"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}
