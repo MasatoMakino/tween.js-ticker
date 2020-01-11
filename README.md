@@ -4,6 +4,10 @@
 
 [GitHub](https://github.com/MasatoMakino/tween.js-ticker)
 
+## Demo
+
+[Demo page](https://masatomakino.github.io/tween.js-ticker/demo)
+
 ## Getting Started
 
 ### Install
@@ -19,6 +23,8 @@ import { TWEENTicker } from "tween.js-ticker";
 ```
 
 Just import it, tween.js-ticker will start automatically.
+
+[API documentation](https://masatomakino.github.io/tween.js-ticker/api)
 
 ## Why
 
