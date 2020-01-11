@@ -2,7 +2,7 @@
 
 > Simple update loop module for tweenjs/tween.js.
 
-[GitHub](https://github.com/MasatoMakino/raf-ticker)
+[GitHub](https://github.com/MasatoMakino/tween.js-ticker)
 
 ## Getting Started
 
