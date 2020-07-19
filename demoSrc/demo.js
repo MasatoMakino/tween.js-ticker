@@ -1,4 +1,3 @@
-import { TWEENTicker } from "../lib";
 import TWEEN from "@tweenjs/tween.js";
 
 export class Demo {
@@ -8,10 +7,9 @@ export class Demo {
     const tween = new TWEEN.Tween(circle.dataset)
       .to({ rotation: 360, y: 300 }, 750)
       .repeat(Infinity)
-      // .delay(1000)
       .yoyo(true)
       .easing(TWEEN.Easing.Cubic.InOut)
-      .onUpdate(object => {
+      .onUpdate((object) => {
         this.updateBox(circle, object);
       })
       .start();
