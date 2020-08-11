@@ -163,31 +163,31 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Demo\", function() { return Demo; });\n/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../lib */ \"./lib/index.js\");\n/* harmony import */ var _lib__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_lib__WEBPACK_IMPORTED_MODULE_0__);\n/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @tweenjs/tween.js */ \"./node_modules/@tweenjs/tween.js/dist/tween.esm.js\");\n\n\nclass Demo {\n  constructor() {\n    const circle = this.addCircle();\n    const tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__[\"default\"].Tween(circle.dataset).to({\n      rotation: 360,\n      y: 300\n    }, 750).repeat(Infinity).yoyo(true).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_1__[\"default\"].Easing.Cubic.InOut).onUpdate(object => {\n      this.updateBox(circle, object);\n    }).start();\n  }\n\n  updateBox(box, params) {\n    const s = box.style;\n    const transform = `translateY(${Math.round(params.y)}px) rotate(${Math.floor(params.rotation)}deg)`;\n    s.transform = transform;\n  }\n\n  addCircle() {\n    const circle = document.createElement(\"div\");\n    const style = circle.style;\n    style.left = \"300px\";\n    style.top = \"0px\";\n    style.width = \"100px\";\n    style.height = \"100px\";\n    style.border = \"1px solid black\";\n    style.borderRadius = \"50px\";\n    style.position = \"absolute\";\n    circle.dataset.y = 0;\n    circle.dataset.rotation = 0;\n    document.body.appendChild(circle);\n    return circle;\n  }\n\n}\n\nwindow.onload = () => {\n  const demo = new Demo();\n};\n\n//# sourceURL=webpack:///./demoSrc/demo.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Demo\", function() { return Demo; });\n/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tweenjs/tween.js */ \"./node_modules/@tweenjs/tween.js/dist/tween.esm.js\");\n/* harmony import */ var ___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../ */ \"./esm/index.js\");\n\n\nclass Demo {\n  constructor() {\n    console.log(___WEBPACK_IMPORTED_MODULE_1__[\"TWEENTicker\"].isStart);\n    const circle = this.addCircle();\n    const tween = new _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].Tween(circle.dataset).to({\n      rotation: 360,\n      y: 300\n    }, 750).repeat(Infinity).yoyo(true).easing(_tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].Easing.Cubic.InOut).onUpdate(object => {\n      this.updateBox(circle, object);\n    }).start();\n  }\n\n  updateBox(box, params) {\n    const s = box.style;\n    const transform = `translateY(${Math.round(params.y)}px) rotate(${Math.floor(params.rotation)}deg)`;\n    s.transform = transform;\n  }\n\n  addCircle() {\n    const circle = document.createElement(\"div\");\n    const style = circle.style;\n    style.left = \"300px\";\n    style.top = \"0px\";\n    style.width = \"100px\";\n    style.height = \"100px\";\n    style.border = \"1px solid black\";\n    style.borderRadius = \"50px\";\n    style.position = \"absolute\";\n    circle.dataset.y = 0;\n    circle.dataset.rotation = 0;\n    document.body.appendChild(circle);\n    return circle;\n  }\n\n}\n\nwindow.onload = () => {\n  const demo = new Demo();\n};\n\n//# sourceURL=webpack:///./demoSrc/demo.js?");
 
 /***/ }),
 
-/***/ "./lib/TWEENTicker.js":
+/***/ "./esm/TWEENTicker.js":
 /*!****************************!*\
-  !*** ./lib/TWEENTicker.js ***!
+  !*** ./esm/TWEENTicker.js ***!
   \****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: TWEENTicker */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar __importDefault = this && this.__importDefault || function (mod) {\n  return mod && mod.__esModule ? mod : {\n    \"default\": mod\n  };\n};\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\nexports.TWEENTicker = void 0;\n\nvar tween_js_1 = __importDefault(__webpack_require__(/*! @tweenjs/tween.js */ \"./node_modules/@tweenjs/tween.js/dist/tween.esm.js\"));\n\nvar raf_ticker_1 = __webpack_require__(/*! raf-ticker */ \"./node_modules/raf-ticker/esm/index.js\");\n\nvar TWEENTicker =\n/** @class */\nfunction () {\n  function TWEENTicker() {}\n\n  TWEENTicker.initialize = function () {\n    this.start();\n  };\n\n  TWEENTicker.start = function () {\n    if (this.isStart) return;\n    this.isStart = true;\n    raf_ticker_1.RAFTicker.addEventListener(raf_ticker_1.RAFTickerEventType.onBeforeTick, this.update);\n  };\n\n  TWEENTicker.stop = function () {\n    if (!this.isStart) return;\n    this.isStart = false;\n    raf_ticker_1.RAFTicker.removeEventListener(raf_ticker_1.RAFTickerEventType.onBeforeTick, this.update);\n  };\n\n  TWEENTicker.update = function (e) {\n    tween_js_1.default.update();\n  };\n\n  return TWEENTicker;\n}();\n\nexports.TWEENTicker = TWEENTicker;\nTWEENTicker.initialize();\n\n//# sourceURL=webpack:///./lib/TWEENTicker.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"TWEENTicker\", function() { return TWEENTicker; });\n/* harmony import */ var _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @tweenjs/tween.js */ \"./node_modules/@tweenjs/tween.js/dist/tween.esm.js\");\n/* harmony import */ var raf_ticker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! raf-ticker */ \"./node_modules/raf-ticker/esm/index.js\");\n\n\nclass TWEENTicker {\n  static initialize() {\n    this.start();\n  }\n\n  static start() {\n    if (this.isStart) return;\n    this.isStart = true;\n    raf_ticker__WEBPACK_IMPORTED_MODULE_1__[\"RAFTicker\"].on(raf_ticker__WEBPACK_IMPORTED_MODULE_1__[\"RAFTickerEventType\"].onBeforeTick, this.update);\n  }\n\n  static stop() {\n    if (!this.isStart) return;\n    this.isStart = false;\n    raf_ticker__WEBPACK_IMPORTED_MODULE_1__[\"RAFTicker\"].off(raf_ticker__WEBPACK_IMPORTED_MODULE_1__[\"RAFTickerEventType\"].onBeforeTick, this.update);\n  }\n\n}\n\nTWEENTicker.update = e => {\n  _tweenjs_tween_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].update();\n};\n\nTWEENTicker.initialize();\n\n//# sourceURL=webpack:///./esm/TWEENTicker.js?");
 
 /***/ }),
 
-/***/ "./lib/index.js":
+/***/ "./esm/index.js":
 /*!**********************!*\
-  !*** ./lib/index.js ***!
+  !*** ./esm/index.js ***!
   \**********************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: TWEENTicker */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("\n\nvar __createBinding = this && this.__createBinding || (Object.create ? function (o, m, k, k2) {\n  if (k2 === undefined) k2 = k;\n  Object.defineProperty(o, k2, {\n    enumerable: true,\n    get: function () {\n      return m[k];\n    }\n  });\n} : function (o, m, k, k2) {\n  if (k2 === undefined) k2 = k;\n  o[k2] = m[k];\n});\n\nvar __exportStar = this && this.__exportStar || function (m, exports) {\n  for (var p in m) if (p !== \"default\" && !exports.hasOwnProperty(p)) __createBinding(exports, m, p);\n};\n\nObject.defineProperty(exports, \"__esModule\", {\n  value: true\n});\n\n__exportStar(__webpack_require__(/*! ./TWEENTicker */ \"./lib/TWEENTicker.js\"), exports);\n\n//# sourceURL=webpack:///./lib/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _TWEENTicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TWEENTicker */ \"./esm/TWEENTicker.js\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"TWEENTicker\", function() { return _TWEENTicker__WEBPACK_IMPORTED_MODULE_0__[\"TWEENTicker\"]; });\n\n\n\n//# sourceURL=webpack:///./esm/index.js?");
 
 /***/ })
 
