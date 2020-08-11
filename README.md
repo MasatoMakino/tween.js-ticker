@@ -2,7 +2,7 @@
 
 > Simple update loop module for tweenjs/tween.js.
 
-[GitHub](https://github.com/MasatoMakino/tween.js-ticker)
+[![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=tween.js-ticker&show_owner=true)](https://github.com/MasatoMakino/tween.js-ticker)
 
 ## Demo
 

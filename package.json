@@ -1,6 +1,6 @@
 {
   "name": "tween.js-ticker",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "lib/index.js",
   "module": "esm/index.js",
   "types": "lib/index.d.ts",
@@ -37,9 +37,8 @@
   },
   "scripts": {
     "start:dev": "gulp start_dev",
-    "build": "gulp build && npm run doc:card",
-    "build:clean": "gulp build_clean && npm run doc:card",
-    "doc:card": "repoimg -n MasatoMakino/tween.js-ticker -o ./docs/card.png",
+    "build": "gulp build",
+    "build:clean": "gulp build_clean",
     "checkout:docs": "git checkout HEAD ./docs/"
   },
   "husky": {
