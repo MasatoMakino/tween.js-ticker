@@ -1,7 +1,10 @@
 import TWEEN from "@tweenjs/tween.js";
+import { TWEENTicker } from "../";
 
 export class Demo {
   constructor() {
+    console.log(TWEENTicker.isStart);
+
     const circle = this.addCircle();
 
     const tween = new TWEEN.Tween(circle.dataset)

@@ -1,5 +1,5 @@
 import TWEEN from "@tweenjs/tween.js";
-import { RAFTicker, RAFTickerEventType, RAFTickerEvent } from "raf-ticker";
+import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
 
 export class TWEENTicker {
   private static isStart: boolean;
@@ -11,7 +11,7 @@ export class TWEENTicker {
   public static start() {
     if (this.isStart) return;
     this.isStart = true;
-    RAFTicker.addEventListener(RAFTickerEventType.onBeforeTick, this.update);
+    RAFTicker.on(RAFTickerEventType.onBeforeTick, this.update);
   }
 
   private static update = (e: RAFTickerEvent) => {
@@ -21,7 +21,7 @@ export class TWEENTicker {
   public static stop() {
     if (!this.isStart) return;
     this.isStart = false;
-    RAFTicker.removeEventListener(RAFTickerEventType.onBeforeTick, this.update);
+    RAFTicker.off(RAFTickerEventType.onBeforeTick, this.update);
   }
 }
 
