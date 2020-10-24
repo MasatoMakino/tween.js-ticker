@@ -1,4 +1,4 @@
-import TWEEN from "@tweenjs/tween.js";
+import { update } from "@tweenjs/tween.js";
 import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
 
 export class TWEENTicker {
@@ -15,7 +15,7 @@ export class TWEENTicker {
   }
 
   private static update = (e: RAFTickerEvent) => {
-    TWEEN.update();
+    update();
   };
 
   public static stop() {
