@@ -1,10 +1,10 @@
 const { parallel, series } = require("gulp");
 
-const doc = require("gulptask-tsdoc").get();
-const server = require("gulptask-dev-server").get("./docs/demo");
-const { bundleDemo, watchDemo } = require("gulptask-demo-page").get();
+const doc = require("gulptask-tsdoc").generateTask();
+const server = require("gulptask-dev-server").generateTask("./docs/demo");
+const { bundleDemo, watchDemo } = require("gulptask-demo-page").generateTasks();
 
-const { tsc, tscClean, watchTsc } = require("gulptask-tsc").get({
+const { tsc, tscClean, watchTsc } = require("gulptask-tsc").generateTasks({
   projects: ["./tsconfig.json", "./tsconfig.esm.json"]
 });
 
