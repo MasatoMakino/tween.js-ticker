@@ -22,6 +22,8 @@ jobs:
           node-version: "16"
           cache: "npm"
       - run: npm ci
+      - name: build binary
+        run: npm run buildTS
       - name: Genarate API Pages
         run: npm run typedocs
       - name: Generate Demo Pages
