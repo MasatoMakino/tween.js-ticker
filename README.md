@@ -2,7 +2,7 @@
 
 > Simple update loop module for tweenjs/tween.js.
 
-[![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=tween.js-ticker&show_owner=true)](https://github.com/MasatoMakino/tween.js-ticker)
+[![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=tween.js-ticker)](https://github.com/MasatoMakino/tween.js-ticker)
 
 ## Demo
 
@@ -13,7 +13,7 @@
 ### Install
 
 ```bash
-$ npm install https://github.com/MasatoMakino/tween.js-ticker.git -D
+$ npm install @masatomakino/tween.js-ticker -D
 ```
 
 ### How to use
