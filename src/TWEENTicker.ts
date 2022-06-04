@@ -1,5 +1,9 @@
+import {
+  RAFTicker,
+  RAFTickerEvent,
+  RAFTickerEventType,
+} from "@masatomakino/raf-ticker";
 import { update } from "@tweenjs/tween.js";
-import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
 
 export class TWEENTicker {
   private static isStart: boolean;
