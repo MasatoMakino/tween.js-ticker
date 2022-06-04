@@ -1,1 +1,1 @@
-{"version":3,"file":"TWEENTicker.d.ts","sourceRoot":"","sources":["../src/TWEENTicker.ts"],"names":[],"mappings":"AAGA,qBAAa,WAAW;IACtB,OAAO,CAAC,MAAM,CAAC,OAAO,CAAU;WAElB,UAAU;WAIV,KAAK;IAMnB,OAAO,CAAC,MAAM,CAAC,MAAM,CAEnB;WAEY,IAAI;CAKnB"}
+{"version":3,"file":"TWEENTicker.d.ts","sourceRoot":"","sources":["../src/TWEENTicker.ts"],"names":[],"mappings":"AAOA,qBAAa,WAAW;IACtB,OAAO,CAAC,MAAM,CAAC,OAAO,CAAU;WAElB,UAAU;WAIV,KAAK;IAMnB,OAAO,CAAC,MAAM,CAAC,MAAM,CAEnB;WAEY,IAAI;CAKnB"}
