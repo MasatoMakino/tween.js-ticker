@@ -19,7 +19,7 @@ $ npm install @masatomakino/tween.js-ticker -D
 ### How to use
 
 ```js
-import { TWEENTicker } from "tween.js-ticker";
+import { TWEENTicker } from "@masatomakino/tween.js-ticker";
 ```
 
 Just import it, tween.js-ticker will start automatically.
