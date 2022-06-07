@@ -13,7 +13,7 @@
 ### Install
 
 ```bash
-$ npm install @masatomakino/tween.js-ticker -D
+npm install @masatomakino/tween.js-ticker -D
 ```
 
 ### How to use
