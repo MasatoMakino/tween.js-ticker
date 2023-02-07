@@ -2,6 +2,9 @@
 
 > Simple update loop module for tweenjs/tween.js.
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/626029403952adbad62d/maintainability)](https://codeclimate.com/github/MasatoMakino/tween.js-ticker/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/626029403952adbad62d/test_coverage)](https://codeclimate.com/github/MasatoMakino/tween.js-ticker/test_coverage)
+
 [![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=tween.js-ticker)](https://github.com/MasatoMakino/tween.js-ticker)
 
 ## Demo
