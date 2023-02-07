@@ -18,8 +18,8 @@ export class TWEENTicker {
     RAFTicker.on(RAFTickerEventType.onBeforeTick, this.update);
   }
 
-  private static update = (e: RAFTickerEvent) => {
-    update();
+  static update = (e: RAFTickerEvent) => {
+    update(e.timestamp);
   };
 
   public static stop() {
