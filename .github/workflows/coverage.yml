@@ -2,7 +2,7 @@ name: Coverage Report
 
 on:
   workflow_run:
-    workflows: ["Jest"]
+    workflows: ["Test"]
     branches: [main]
     types:
       - completed
