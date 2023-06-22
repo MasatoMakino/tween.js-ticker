@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@masatomakino/gulptask-demo-page": "^0.6.7",
-    "@tweenjs/tween.js": "^18.6.4",
+    "@tweenjs/tween.js": "^20.0.3",
     "@types/jest": "^29.5.2",
     "browser-sync": "^2.29.3",
     "husky": "^8.0.3",
