@@ -19,11 +19,11 @@
     "@masatomakino/raf-ticker": "^0.5.1"
   },
   "peerDependencies": {
-    "@tweenjs/tween.js": "^20.0.3"
+    "@tweenjs/tween.js": "^21.0.0"
   },
   "devDependencies": {
     "@masatomakino/gulptask-demo-page": "^0.6.7",
-    "@tweenjs/tween.js": "^20.0.3",
+    "@tweenjs/tween.js": "^21.0.0",
     "@types/jest": "^29.5.2",
     "browser-sync": "^2.29.3",
     "husky": "^8.0.3",
