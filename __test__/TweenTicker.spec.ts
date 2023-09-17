@@ -1,6 +1,6 @@
 import { RAFTicker } from "@masatomakino/raf-ticker";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
-import { TWEENTicker } from "../src";
+import { TWEENTicker } from "../src/index.js";
 
 describe("TweenTicker", () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("TweenTicker", () => {
     target: { x: number },
     val: number,
     updateCallback: jest.Mock,
-    called: boolean
+    called: boolean,
   ) => {
     expect(target).toEqual({ x: val });
     if (called) {
