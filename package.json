@@ -1,11 +1,21 @@
 {
   "name": "@masatomakino/tween.js-ticker",
-  "version": "0.5.1",
-  "main": "lib/index.js",
-  "module": "esm/index.js",
-  "types": "lib/index.d.ts",
+  "version": "0.6.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      },
+      "default": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      }
+    }
+  },
+  "types": "./esm/index.d.ts",
   "files": [
-    "lib",
     "esm"
   ],
   "description": "Simple update loop module for tweenjs/tween.js.",
@@ -43,11 +53,11 @@
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
     "build": "npm run buildTS && npm run demo && npm run typedocs",
     "demo": "npx @masatomakino/gulptask-demo-page",
-    "buildTS": "tsc --project tsconfig.json & tsc --project tsconfig.esm.json",
+    "buildTS": "tsc",
     "typedocs": "npx typedoc --out ./docs/api src/index.ts",
     "server": "browser-sync ./docs/demo -w",
     "watch:demo": "npm run demo -- -W",
-    "watch:tsc": "tsc -W --incremental --project tsconfig.json & tsc -W --incremental --project tsconfig.esm.json"
+    "watch:tsc": "tsc -W --incremental"
   },
   "bugs": {
     "url": "https://github.com/MasatoMakino/tween.js-ticker/issues"
@@ -55,7 +65,7 @@
   "homepage": "https://github.com/MasatoMakino/tween.js-ticker#readme",
   "directories": {
     "doc": "docs",
-    "lib": "lib"
+    "lib": "esm"
   },
   "lint-staged": {
     "*.{js,ts,css,md}": "prettier --write"

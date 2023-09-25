@@ -1,1 +1,1 @@
-export * from "./TWEENTicker";
+export * from "./TWEENTicker.js";

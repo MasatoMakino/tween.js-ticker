@@ -1,5 +1,5 @@
 import { Easing, Tween } from "@tweenjs/tween.js";
-import { TWEENTicker } from "../";
+import { TWEENTicker } from "../esm/index.js";
 
 export class Demo {
   constructor() {
@@ -21,7 +21,7 @@ export class Demo {
   updateBox(box, params) {
     const s = box.style;
     const transform = `translateY(${Math.round(
-      params.y
+      params.y,
     )}px) rotate(${Math.floor(params.rotation)}deg)`;
     s.transform = transform;
   }
