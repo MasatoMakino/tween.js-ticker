@@ -26,7 +26,7 @@
   "author": "MasatoMakino <unagiinu.g@gmail.com>",
   "license": "MIT",
   "peerDependencies": {
-    "@masatomakino/raf-ticker": "^0.5.2",
+    "@masatomakino/raf-ticker": "file:masatomakino-raf-ticker-0.5.3.tgz",
     "@tweenjs/tween.js": "^18.6.4 || ^19.0.0 || ^20.0.3 || ^21.0.0"
   },
   "devDependencies": {
@@ -39,7 +39,6 @@
     "lint-staged": "^15.0.2",
     "prettier": "^3.0.1",
     "ts-jest": "^29.1.0",
-    "ts-node": "^10.9.1",
     "typedoc": "^0.25.0",
     "typescript": "^5.1.3"
   },

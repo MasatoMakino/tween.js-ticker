@@ -1,4 +1,7 @@
 /** @type {import('ts-jest').JestConfigWithTsJest} */
+
+const ignorePackages = ["@masatomakino/raf-ticker"];
+
 const jestConfig = {
   preset: "ts-jest",
   collectCoverageFrom: ["src/**/*.ts"],
@@ -15,6 +18,7 @@ const jestConfig = {
       },
     ],
   },
+  transformIgnorePatterns: [`node_modules/(?!(${ignorePackages.join("|")})/)`],
 };
 
 export default jestConfig;
