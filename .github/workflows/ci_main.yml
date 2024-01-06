@@ -10,7 +10,7 @@ on:
     branches: [main]
 
 jobs:
-  jest:
+  unit_test:
     runs-on: ubuntu-22.04
 
     strategy:
