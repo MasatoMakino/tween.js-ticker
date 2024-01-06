@@ -1,3 +1,4 @@
+import { describe, beforeEach, vi, expect, Mock, test } from "vitest";
 import { RAFTicker } from "@masatomakino/raf-ticker";
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 import { TWEENTicker } from "../src/index.js";
@@ -12,7 +13,7 @@ describe("TweenTicker", () => {
 
   const generateTween = () => {
     const target = { x: 0 };
-    const updateCallback = jest.fn();
+    const updateCallback = vi.fn();
     new Tween(target).to({ x: 1 }, 1000).onUpdate(updateCallback).start(0);
     return { target, updateCallback };
   };
@@ -20,7 +21,7 @@ describe("TweenTicker", () => {
   const testTick = (
     target: { x: number },
     val: number,
-    updateCallback: jest.Mock,
+    updateCallback: Mock,
     called: boolean,
   ) => {
     expect(target).toEqual({ x: val });
