@@ -7,11 +7,20 @@ export class Demo {
 
     const circle = this.addCircle();
 
+    const yoyo = (f) => {
+      return (t) => {
+        if (t < 0.5) {
+          return f(2 * t);
+        } else {
+          return 1 - f(2 * (t - 0.5));
+        }
+      };
+    };
+
     const tween = new Tween(circle.dataset)
-      .to({ rotation: 360, y: 300 }, 750)
+      .to({ rotation: 360, y: 300 }, 1500)
       .repeat(Infinity)
-      .yoyo(true)
-      .easing(Easing.Cubic.InOut)
+      .easing(yoyo((t) => Easing.Cubic.InOut(t)))
       .onUpdate((object) => {
         this.updateBox(circle, object);
       })
