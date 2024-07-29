@@ -1,7 +1,8 @@
 import { RAFTicker, RAFTickerEventContext } from "@masatomakino/raf-ticker";
-import { update } from "@tweenjs/tween.js";
+import { Group } from "@tweenjs/tween.js";
 
 export class TWEENTicker {
+  public static readonly group: Group = new Group();
   private static isStart: boolean;
 
   public static initialize() {
@@ -15,7 +16,7 @@ export class TWEENTicker {
   }
 
   static update = (e: RAFTickerEventContext) => {
-    update(e.timestamp);
+    this.group.update(e.timestamp);
   };
 
   public static stop() {

@@ -1,11 +1,11 @@
-import { describe, beforeEach, vi, expect, Mock, test } from "vitest";
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import TWEEN, { Tween } from "@tweenjs/tween.js";
+import { Tween } from "@tweenjs/tween.js";
+import { beforeEach, describe, expect, Mock, test, vi } from "vitest";
 import { TWEENTicker } from "../src/index.js";
 
 describe("TweenTicker", () => {
   beforeEach(() => {
-    TWEEN.removeAll();
+    TWEENTicker.group.removeAll();
     RAFTicker.stop();
     RAFTicker.emitTickEvent(0);
     TWEENTicker.start();
@@ -14,8 +14,11 @@ describe("TweenTicker", () => {
   const generateTween = () => {
     const target = { x: 0 };
     const updateCallback = vi.fn();
-    new Tween(target).to({ x: 1 }, 1000).onUpdate(updateCallback).start(0);
-    return { target, updateCallback };
+    const tween = new Tween(target)
+      .to({ x: 1 }, 1000)
+      .onUpdate(updateCallback)
+      .start(0);
+    return { target, tween, updateCallback };
   };
 
   const testTick = (
@@ -34,7 +37,8 @@ describe("TweenTicker", () => {
   };
 
   test("tick", () => {
-    const { target, updateCallback } = generateTween();
+    const { target, tween, updateCallback } = generateTween();
+    TWEENTicker.group.add(tween);
 
     RAFTicker.emitTickEvent(500);
     testTick(target, 0.5, updateCallback, true);
@@ -46,7 +50,9 @@ describe("TweenTicker", () => {
 
   test("stop", () => {
     TWEENTicker.stop();
-    const { target, updateCallback } = generateTween();
+    const { target, tween, updateCallback } = generateTween();
+    TWEENTicker.group.add(tween);
+
     RAFTicker.emitTickEvent(1000);
     testTick(target, 0, updateCallback, false);
 
