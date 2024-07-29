@@ -3,8 +3,6 @@ import { TWEENTicker } from "../esm/index.js";
 
 export class Demo {
   constructor() {
-    console.log(TWEENTicker.isStart);
-
     const circle = this.addCircle();
 
     const yoyo = (f) => {
@@ -25,6 +23,7 @@ export class Demo {
         this.updateBox(circle, object);
       })
       .start();
+    TWEENTicker.group.add(tween);
   }
 
   updateBox(box, params) {
