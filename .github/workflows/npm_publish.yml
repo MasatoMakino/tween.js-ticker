@@ -1,4 +1,7 @@
 name: Publish to NPM
+# Usage:
+#   CLI: gh workflow run npm_publish.yml --ref v1.0.0
+#   Web: Actions > "Publish to NPM" > select tag from "Use workflow from" dropdown > Run
 on:
   workflow_dispatch:
 permissions: {}
@@ -8,14 +11,75 @@ jobs:
     permissions:
       contents: read
     env:
+      GH_TOKEN: ${{ github.token }}
       REF: ${{ github.ref }}
-      REF_NAME: ${{ github.ref_name }}
+      TAG: ${{ github.ref_name }}
+      REPO: ${{ github.repository }}
+      DISPATCH_SHA: ${{ github.sha }}
     steps:
+      - name: Verify dispatch ref is a tag
+        run: |
+          if [[ "$REF" != refs/tags/* ]]; then
+            echo "::error::Workflow must be dispatched from a tag ref, got: $REF"
+            exit 1
+          fi
+      - name: Validate tag format
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid tag format: $TAG (expected v*.*.* pattern)"
+            exit 1
+          fi
+      - name: Verify tag exists and resolve commit SHA
+        id: resolve_tag
+        run: |
+          TAG_REF=$(gh api "repos/${REPO}/git/ref/tags/${TAG}" \
+            --jq '.object.sha + " " + .object.type') || {
+            echo "::error::Failed to look up tag $TAG"
+            exit 1
+          }
+          TAG_OBJ_SHA=$(echo "$TAG_REF" | cut -d' ' -f1)
+          TAG_OBJ_TYPE=$(echo "$TAG_REF" | cut -d' ' -f2)
+          if [ "$TAG_OBJ_TYPE" = "commit" ]; then
+            COMMIT_SHA="$TAG_OBJ_SHA"
+          else
+            COMMIT_SHA=$(gh api "repos/${REPO}/git/tags/${TAG_OBJ_SHA}" \
+              --jq '.object.sha') || {
+              echo "::error::Failed to resolve annotated tag $TAG"
+              exit 1
+            }
+          fi
+          if [ "$COMMIT_SHA" != "$DISPATCH_SHA" ]; then
+            echo "::error::Tag commit ($COMMIT_SHA) differs from dispatch commit ($DISPATCH_SHA). Tag may have been force-moved."
+            exit 1
+          fi
+          echo "Tag $TAG verified at commit $COMMIT_SHA"
+          echo "sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
+      - name: Verify GitHub Release is published
+        run: |
+          RELEASE=$(gh api "repos/${REPO}/releases/tags/${TAG}" \
+            --jq '[.draft, .name] | @tsv') || {
+            echo "::error::No GitHub Release found for tag $TAG"
+            exit 1
+          }
+          IS_DRAFT=$(echo "$RELEASE" | cut -f1)
+          RELEASE_NAME=$(echo "$RELEASE" | cut -f2)
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "::error::Release for $TAG is still a draft"
+            exit 1
+          fi
+          echo "Release verified: $RELEASE_NAME"
+      - name: Extract version from tag
+        id: extract
+        run: |
+          VERSION="$TAG"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Validate and show package info
+        with:
+          ref: ${{ steps.resolve_tag.outputs.sha }}
+      - name: Validate package.json fields
         run: |
-          echo "Dispatch ref: ${REF} (${REF_NAME})"
           NAME=$(jq -r .name package.json)
           VERSION=$(jq -r .version package.json)
           if [[ ! "$NAME" =~ ^(@[a-z0-9._-]+/)?[a-z0-9._-]+$ ]]; then
@@ -28,6 +92,16 @@ jobs:
           fi
           echo "Package: ${NAME}@${VERSION}"
           echo "Files field: $(jq -r '.files | join(", ")' package.json)"
+      - name: Verify package.json version matches tag
+        env:
+          TAG_VERSION: ${{ steps.extract.outputs.version }}
+        run: |
+          PKG_VERSION=$(jq -r .version package.json)
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::package.json version ($PKG_VERSION) does not match tag ($TAG_VERSION)"
+            exit 1
+          fi
+          echo "Version match: $PKG_VERSION"
       - name: Verify version is not already published
         run: |
           NAME=$(jq -r .name package.json)
@@ -57,6 +131,7 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-22.04
+    environment: npm-publish
     permissions:
       id-token: write
     steps:
