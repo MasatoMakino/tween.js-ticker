@@ -1,26 +1,86 @@
 name: Publish to NPM
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+permissions: {}
 jobs:
-  npm-publish:
+  validate:
     runs-on: ubuntu-22.04
     permissions:
-      id-token: write  # Required for OIDC authentication
-      contents: read   # Required for repository access
+      contents: read
+    env:
+      REF: ${{ github.ref }}
+      REF_NAME: ${{ github.ref_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          sparse-checkout: package.json
+          sparse-checkout-cone-mode: false
+      - name: Validate and show package info
+        run: |
+          echo "Dispatch ref: ${REF} (${REF_NAME})"
+          NAME=$(jq -r .name package.json)
+          VERSION=$(jq -r .version package.json)
+          if [[ ! "$NAME" =~ ^(@[a-z0-9._-]+/)?[a-z0-9._-]+$ ]]; then
+            echo "::error::Invalid package name: ${NAME}"
+            exit 1
+          fi
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: ${VERSION}"
+            exit 1
+          fi
+          echo "Package: ${NAME}@${VERSION}"
+          echo "Files field: $(jq -r '.files | join(", ")' package.json)"
+      - name: Verify version is not already published
+        run: |
+          NAME=$(jq -r .name package.json)
+          VERSION=$(jq -r .version package.json)
+          if npm view "${NAME}@${VERSION}" version 2>/dev/null; then
+            echo "::error::Version ${VERSION} is already published on npm"
+            exit 1
+          fi
+          echo "Version ${VERSION} is not yet published — OK"
+  build:
+    needs: validate
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Use Node.js
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
-          registry-url: "https://registry.npmjs.org"
-      - name: Upgrade npm to latest
-        run: npm install -g npm@latest
       - run: npm ci
-      - name: build binary
+      - name: Build
         run: npm run buildTS
-      - name: Publish package on NPM 📦
-        run: npm publish --access public
+      - name: Pack
+        run: npm pack
+      - name: Upload package artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: npm-package
+          path: "*.tgz"
+          if-no-files-found: error
+          retention-days: 1
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: npm-package
+      - name: Use Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g "npm@^11.10.0"
+      - name: Publish package on NPM
+        run: npm publish *.tgz --provenance --access public
