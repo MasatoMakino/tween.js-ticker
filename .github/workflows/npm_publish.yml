@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 permissions: {}
 jobs:
-  validate:
+  build:
     runs-on: ubuntu-22.04
     permissions:
       contents: read
@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          sparse-checkout: package.json
-          sparse-checkout-cone-mode: false
       - name: Validate and show package info
         run: |
           echo "Dispatch ref: ${REF} (${REF_NAME})"
@@ -40,14 +37,6 @@ jobs:
             exit 1
           fi
           echo "Version ${VERSION} is not yet published — OK"
-  build:
-    needs: validate
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Use Node.js
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
@@ -81,6 +70,12 @@ jobs:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
       - name: Upgrade npm for OIDC trusted publishing
-        run: npm install -g "npm@^11.10.0"
+        run: npm install -g "npm@11.10.0"
       - name: Publish package on NPM
-        run: npm publish *.tgz --provenance --access public
+        run: |
+          TGZ=$(ls *.tgz)
+          if [ "$(echo "$TGZ" | wc -l)" -ne 1 ]; then
+            echo "::error::Expected exactly one .tgz file, found: $TGZ"
+            exit 1
+          fi
+          npm publish "$TGZ" --provenance --access public
