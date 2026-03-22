@@ -102,20 +102,25 @@ jobs:
             exit 1
           fi
           echo "Version match: $PKG_VERSION"
-      - name: Verify version is not already published
-        run: |
-          NAME=$(jq -r .name package.json)
-          VERSION=$(jq -r .version package.json)
-          if npm view "${NAME}@${VERSION}" version 2>/dev/null; then
-            echo "::error::Version ${VERSION} is already published on npm"
-            exit 1
-          fi
-          echo "Version ${VERSION} is not yet published — OK"
       - name: Use Node.js
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: "22"
           cache: "npm"
+      - name: Verify version is not already published
+        run: |
+          NAME=$(jq -r .name package.json)
+          VERSION=$(jq -r .version package.json)
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>/tmp/npm-view.err; then
+            echo "::error::Version ${VERSION} is already published on npm"
+            exit 1
+          elif grep -Eq 'E404|404[[:space:]]+Not Found' /tmp/npm-view.err; then
+            echo "Version ${VERSION} is not yet published — OK"
+          else
+            cat /tmp/npm-view.err >&2
+            echo "::error::Unable to determine whether ${NAME}@${VERSION} already exists on npm"
+            exit 1
+          fi
       - run: npm ci
       - name: Build
         run: npm run buildTS
@@ -149,7 +154,9 @@ jobs:
           npm install -g "npm@11.12.0"
           --integrity="sha512-xPhOap4ZbJWyd7DAOukP564WFwNSGu/2FeTRFHhiiKthcauxhH/NpkJAQm24xD+cAn8av5tQ00phi98DqtfLsg=="
       - name: Publish package on NPM
+        shell: bash
         run: |
+          shopt -s nullglob
           set -- *.tgz
           if [ "$#" -ne 1 ]; then
             echo "::error::Expected exactly one .tgz file, found: $#"
