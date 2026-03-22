@@ -50,7 +50,7 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: npm-package
+          name: masatomakino-tween.js-ticker
           path: "*.tgz"
           if-no-files-found: error
           retention-days: 1
@@ -63,19 +63,21 @@ jobs:
       - name: Download package artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          name: npm-package
+          name: masatomakino-tween.js-ticker
       - name: Use Node.js
         uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: "22"
           registry-url: "https://registry.npmjs.org"
       - name: Upgrade npm for OIDC trusted publishing
-        run: npm install -g "npm@11.10.0"
+        run: >-
+          npm install -g "npm@11.12.0"
+          --integrity="sha512-xPhOap4ZbJWyd7DAOukP564WFwNSGu/2FeTRFHhiiKthcauxhH/NpkJAQm24xD+cAn8av5tQ00phi98DqtfLsg=="
       - name: Publish package on NPM
         run: |
-          TGZ=$(ls *.tgz)
-          if [ "$(echo "$TGZ" | wc -l)" -ne 1 ]; then
-            echo "::error::Expected exactly one .tgz file, found: $TGZ"
+          set -- *.tgz
+          if [ "$#" -ne 1 ]; then
+            echo "::error::Expected exactly one .tgz file, found: $#"
             exit 1
           fi
-          npm publish "$TGZ" --provenance --access public
+          npm publish "$1" --provenance --access public
