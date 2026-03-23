@@ -1,26 +1,166 @@
 name: Publish to NPM
+# Usage:
+#   CLI: gh workflow run npm_publish.yml --ref v1.0.0
+#   Web: Actions > "Publish to NPM" > select tag from "Use workflow from" dropdown > Run
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+permissions: {}
 jobs:
-  npm-publish:
+  build:
     runs-on: ubuntu-22.04
     permissions:
-      id-token: write  # Required for OIDC authentication
-      contents: read   # Required for repository access
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REF: ${{ github.ref }}
+      TAG: ${{ github.ref_name }}
+      REPO: ${{ github.repository }}
+      DISPATCH_SHA: ${{ github.sha }}
     steps:
+      - name: Verify dispatch ref is a tag
+        run: |
+          if [[ "$REF" != refs/tags/* ]]; then
+            echo "::error::Workflow must be dispatched from a tag ref, got: $REF"
+            exit 1
+          fi
+      - name: Validate tag format
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid tag format: $TAG (expected v*.*.* pattern)"
+            exit 1
+          fi
+      - name: Verify tag exists and resolve commit SHA
+        id: resolve_tag
+        run: |
+          TAG_REF=$(gh api "repos/${REPO}/git/ref/tags/${TAG}" \
+            --jq '.object.sha + " " + .object.type') || {
+            echo "::error::Failed to look up tag $TAG"
+            exit 1
+          }
+          TAG_OBJ_SHA=$(echo "$TAG_REF" | cut -d' ' -f1)
+          TAG_OBJ_TYPE=$(echo "$TAG_REF" | cut -d' ' -f2)
+          if [ "$TAG_OBJ_TYPE" = "commit" ]; then
+            COMMIT_SHA="$TAG_OBJ_SHA"
+          else
+            COMMIT_SHA=$(gh api "repos/${REPO}/git/tags/${TAG_OBJ_SHA}" \
+              --jq '.object.sha') || {
+              echo "::error::Failed to resolve annotated tag $TAG"
+              exit 1
+            }
+          fi
+          if [ "$COMMIT_SHA" != "$DISPATCH_SHA" ]; then
+            echo "::error::Tag commit ($COMMIT_SHA) differs from dispatch commit ($DISPATCH_SHA). Tag may have been force-moved."
+            exit 1
+          fi
+          echo "Tag $TAG verified at commit $COMMIT_SHA"
+          echo "sha=$COMMIT_SHA" >> "$GITHUB_OUTPUT"
+      - name: Verify GitHub Release is published
+        run: |
+          RELEASE=$(gh api "repos/${REPO}/releases/tags/${TAG}" \
+            --jq '[.draft, .name] | @tsv') || {
+            echo "::error::No GitHub Release found for tag $TAG"
+            exit 1
+          }
+          IS_DRAFT=$(echo "$RELEASE" | cut -f1)
+          RELEASE_NAME=$(echo "$RELEASE" | cut -f2)
+          if [ "$IS_DRAFT" = "true" ]; then
+            echo "::error::Release for $TAG is still a draft"
+            exit 1
+          fi
+          echo "Release verified: $RELEASE_NAME"
+      - name: Extract version from tag
+        id: extract
+        run: |
+          VERSION="$TAG"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
-      - name: Use Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          node-version: "20"
+          ref: ${{ steps.resolve_tag.outputs.sha }}
+          persist-credentials: false
+      - name: Validate package.json fields
+        run: |
+          NAME=$(jq -r .name package.json)
+          VERSION=$(jq -r .version package.json)
+          if [[ ! "$NAME" =~ ^(@[a-z0-9._-]+/)?[a-z0-9._-]+$ ]]; then
+            echo "::error::Invalid package name: ${NAME}"
+            exit 1
+          fi
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: ${VERSION}"
+            exit 1
+          fi
+          echo "Package: ${NAME}@${VERSION}"
+          echo "Files field: $(jq -r '(.files // ["*"]) | join(", ")' package.json)"
+      - name: Verify package.json version matches tag
+        env:
+          TAG_VERSION: ${{ steps.extract.outputs.version }}
+        run: |
+          PKG_VERSION=$(jq -r .version package.json)
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::package.json version ($PKG_VERSION) does not match tag ($TAG_VERSION)"
+            exit 1
+          fi
+          echo "Version match: $PKG_VERSION"
+      - name: Use Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "22"
           cache: "npm"
-          registry-url: "https://registry.npmjs.org"
-      - name: Upgrade npm to latest
-        run: npm install -g npm@latest
+      - name: Verify version is not already published
+        run: |
+          NAME=$(jq -r .name package.json)
+          VERSION=$(jq -r .version package.json)
+          if npm view "${NAME}@${VERSION}" version >/dev/null 2>/tmp/npm-view.err; then
+            echo "::error::Version ${VERSION} is already published on npm"
+            exit 1
+          elif grep -Eq 'E404|404[[:space:]]+Not Found' /tmp/npm-view.err; then
+            echo "Version ${VERSION} is not yet published — OK"
+          else
+            cat /tmp/npm-view.err >&2
+            echo "::error::Unable to determine whether ${NAME}@${VERSION} already exists on npm"
+            exit 1
+          fi
       - run: npm ci
-      - name: build binary
+      - name: Build
         run: npm run buildTS
-      - name: Publish package on NPM 📦
-        run: npm publish --access public
+      - name: Pack
+        run: npm pack
+      - name: Upload package artifact
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: masatomakino-tween.js-ticker
+          path: "*.tgz"
+          if-no-files-found: error
+          retention-days: 1
+  publish:
+    needs: build
+    runs-on: ubuntu-22.04
+    environment: npm-publish
+    permissions:
+      id-token: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: masatomakino-tween.js-ticker
+      - name: Use Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm for OIDC trusted publishing
+        run: >-
+          npm install -g "npm@11.12.0"
+          --integrity="sha512-xPhOap4ZbJWyd7DAOukP564WFwNSGu/2FeTRFHhiiKthcauxhH/NpkJAQm24xD+cAn8av5tQ00phi98DqtfLsg=="
+      - name: Publish package on NPM
+        shell: bash
+        run: |
+          shopt -s nullglob
+          set -- *.tgz
+          if [ "$#" -ne 1 ]; then
+            echo "::error::Expected exactly one .tgz file, found: $#"
+            exit 1
+          fi
+          npm publish "$1" --provenance --access public
