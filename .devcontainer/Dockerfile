@@ -1,3 +1,3 @@
 FROM node:22-bookworm-slim
 
-RUN npm install -g pnpm@latest-10
+RUN npm install -g pnpm@10.33.0

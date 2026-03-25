@@ -15,7 +15,6 @@
   "postCreateCommand": "pnpm install --frozen-lockfile",
   "postStartCommand": "pnpm audit --audit-level=moderate || true",
   "containerEnv": {
-    "NODE_ENV": "development",
-    "NPM_CONFIG_AUDIT": "true"
+    "NODE_ENV": "development"
   }
 }
