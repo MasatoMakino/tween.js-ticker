@@ -103,11 +103,12 @@ jobs:
             exit 1
           fi
           echo "Version match: $PKG_VERSION"
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
       - name: Use Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: "22"
-          cache: "npm"
+          cache: "pnpm"
       - name: Verify version is not already published
         run: |
           NAME=$(jq -r .name package.json)
@@ -122,11 +123,11 @@ jobs:
             echo "::error::Unable to determine whether ${NAME}@${VERSION} already exists on npm"
             exit 1
           fi
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
       - name: Build
-        run: npm run buildTS
+        run: pnpm run buildTS
       - name: Pack
-        run: npm pack
+        run: pnpm pack
       - name: Upload package artifact
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:

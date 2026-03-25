@@ -25,6 +25,7 @@
   },
   "author": "MasatoMakino <unagiinu.g@gmail.com>",
   "license": "MIT",
+  "packageManager": "pnpm@10.33.0",
   "peerDependencies": {
     "@masatomakino/raf-ticker": "0.5.3 - 0.6.x",
     "@tweenjs/tween.js": "^25.0.0"
@@ -32,26 +33,27 @@
   "devDependencies": {
     "@masatomakino/gulptask-demo-page": "^0.10.0",
     "@tweenjs/tween.js": "^25.0.0",
-    "@vitest/coverage-istanbul": "^4.0.18",
+    "@vitest/coverage-istanbul": "4.0.18",
     "browser-sync": "^3.0.2",
     "jsdom": "^28.1.0",
     "prettier": "^3.3.3",
     "typedoc": "^0.28.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "4.0.18"
   },
   "scripts": {
     "test": "vitest --run",
     "test:watch": "vitest",
     "coverage": "vitest --coverage --run",
-    "pre-commit": "prettier --write --no-error-on-unmatched-pattern",
-    "pre-push": "npm test",
-    "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
-    "build": "npm run buildTS && npm run demo && npm run typedocs",
-    "demo": "npx @masatomakino/gulptask-demo-page",
+    "pre-commit": "prettier --write --no-error-on-unmatched-pattern --ignore-unknown",
+    "pre-push": "pnpm test",
+    "start:dev": "pnpm run server & pnpm run watch:tsc & pnpm run watch:demo",
+    "build": "pnpm run buildTS && pnpm run demo && pnpm run typedocs",
+    "demo": "gulptask-demo-page",
     "buildTS": "tsc",
-    "typedocs": "npx typedoc --out ./docs/api src/index.ts",
+    "typedocs": "typedoc --out ./docs/api src/index.ts",
     "server": "browser-sync ./docs/demo -w --port 3000 --no-open",
-    "watch:demo": "npm run demo -- -W",
+    "watch:demo": "pnpm run demo -W",
     "watch:tsc": "tsc -W --incremental"
   },
   "bugs": {
