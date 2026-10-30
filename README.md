@@ -4,19 +4,20 @@
 >
 > **This repository has been archived.**
 >
-> This package is deprecated in favor of [raf-ticker](https://github.com/MasatoMakino/raf-ticker). Bind the update of a tween.js `Group` to the global `RAFTicker` to get the same behavior.
+> This package is deprecated in favor of [raf-ticker](https://github.com/MasatoMakino/raf-ticker). Bind the update of a tween instance to the global `RAFTicker` to get the same behavior.
 >
-> **Migration:** Install `@masatomakino/raf-ticker` and update your own `Group` on each tick.
+> **Migration:** Install `@masatomakino/raf-ticker` and update the tween on each tick.
 >
 > ```js
 > import { RAFTicker } from "@masatomakino/raf-ticker";
-> import { Group } from "@tweenjs/tween.js";
+> import { Tween } from "@tweenjs/tween.js";
 >
-> const group = new Group();
-> RAFTicker.on("onBeforeTick", (e) => group.update(e.timestamp));
+> const tween = new Tween({ x: 0 }).to({ x: 100 }, 1000).start();
+> const update = (e) => tween.update(e.timestamp);
+> RAFTicker.on("onBeforeTick", update);
 > ```
 >
-> In tween.js v25 and later, a group keeps completed tweens. To stop updating a tween and release it, call `tween.remove()` or `group.remove(tween)`.
+> You must dispose of the tween explicitly. To stop updating it, call `RAFTicker.off("onBeforeTick", update)`.
 >
 > See [#305](https://github.com/MasatoMakino/tween.js-ticker/issues/305) for details.
 
