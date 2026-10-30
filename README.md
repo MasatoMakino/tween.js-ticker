@@ -1,14 +1,28 @@
 # tween.js-ticker
 
-> [!WARNING]
-> We do not recommend new installations of tween.js-ticker and tween.js v25 or later. manage tween instance creation/update manually.
+> [!CAUTION]
+>
+> **This repository has been archived.**
+>
+> This package is deprecated in favor of [raf-ticker](https://github.com/MasatoMakino/raf-ticker). Bind the update of a tween.js `Group` to the global `RAFTicker` to get the same behavior.
+>
+> **Migration:** Install `@masatomakino/raf-ticker` and update your own `Group` on each tick.
+>
+> ```js
+> import { RAFTicker } from "@masatomakino/raf-ticker";
+> import { Group } from "@tweenjs/tween.js";
+>
+> const group = new Group();
+> RAFTicker.on("onBeforeTick", (e) => group.update(e.timestamp));
+> ```
+>
+> In tween.js v25 and later, a group keeps completed tweens. To stop updating a tween and release it, call `tween.remove()` or `group.remove(tween)`.
+>
+> See [#305](https://github.com/MasatoMakino/tween.js-ticker/issues/305) for details.
 
 > This module is a simple Tween.js [mainGroup](https://github.com/tweenjs/tween.js/blob/main/src/mainGroup.ts) substitute.
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
-[![Test](https://github.com/MasatoMakino/tween.js-ticker/actions/workflows/ci_main.yml/badge.svg)](https://github.com/MasatoMakino/tween.js-ticker/actions/workflows/ci_main.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/626029403952adbad62d/maintainability)](https://codeclimate.com/github/MasatoMakino/tween.js-ticker/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/626029403952adbad62d/test_coverage)](https://codeclimate.com/github/MasatoMakino/tween.js-ticker/test_coverage)
 
 [![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=tween.js-ticker)](https://github.com/MasatoMakino/tween.js-ticker)
 
