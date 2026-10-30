@@ -14,10 +14,10 @@
 >
 > const tween = new Tween({ x: 0 }).to({ x: 100 }, 1000).start();
 > const update = (e) => tween.update(e.timestamp);
-> RAFTicker.on("onBeforeTick", update);
+> RAFTicker.on("tick", update);
 > ```
 >
-> You must dispose of the tween explicitly. To stop updating it, call `RAFTicker.off("onBeforeTick", update)`.
+> You must dispose of the tween explicitly. To stop updating it, call `RAFTicker.off("tick", update)`.
 >
 > See [#305](https://github.com/MasatoMakino/tween.js-ticker/issues/305) for details.
 
